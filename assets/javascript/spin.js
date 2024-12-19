@@ -2,21 +2,24 @@
     const $ = document.querySelector.bind(document);
     const wheel = $('.wheel');
     const btn__wheel = $('.btn__wheel');
-    const message = $('.redult'); // Sửa lại tên class 'redult' (nếu bị sai chính tả)
-    const wheel__result = $('.wheel__result');
+    const wheel__result__btn = $('.wheel__result__btn');
+    const message = document.querySelectorAll('.redult'); // Sửa lại tên class 'redult' (nếu bị sai chính tả)
+    const wheel__result = document.querySelectorAll('.wheel__result');
 
+    console.log(wheel__result)
     let timer = 7000; // Thời gian quay (ms)
     let isRotating = false; // Trạng thái đang quay
     let currentRotate = 0; // Góc hiện tại của bánh xe
+    let hasStarted = false; // Trạng thái đã quay hay chưa
 
     // Danh sách quà tặng
     const listGift = [
-        { textName: '売店10％OFF', percent: (100/6)/100 },
-        { textName: 'Gカートグローブプレゼント', percent: (100/6)/100 },
-        { textName: '売店10％OFF', percent: (100/6)/100 },
-        { textName: 'Gカートグローブプレゼント', percent: (100/6)/100},
-        { textName: '売店10％OFF', percent: (100/6)/100 },
-        { textName: 'Gカートグローブプレゼント', percent: (100/6)/100 },
+        { textName: '売店10％OFF', percent: (100 / 6) / 100 },
+        { textName: 'Gカートグローブプレゼント', percent: (100 / 6) / 100 },
+        { textName: '売店10％OFF', percent: (100 / 6) / 100 },
+        { textName: 'Gカートグローブプレゼント', percent: (100 / 6) / 100 },
+        { textName: '売店10％OFF', percent: (100 / 6) / 100 },
+        { textName: 'Gカートグローブプレゼント', percent: (100 / 6) / 100 },
     ];
 
     const size = listGift.length; // Số phần tử quà tặng
@@ -64,8 +67,15 @@
     const showTextGift = (text) => {
         setTimeout(() => {
             isRotating = false; // Cho phép quay tiếp sau khi hoàn thành
-            message.innerHTML = `${text}`;
-            wheel__result.style.display = 'inline-flex';
+            hasStarted = true; // Đánh dấu đã hoàn tất start
+            wheel__result.forEach((element) => {
+                element.style.display = 'inline-flex';
+                message.forEach((element) => {
+                    element.innerHTML = `${text}`;
+                });
+                wheel__result__btn.style.display="block"
+            });
+            btn__wheel.textContent = "クーポン獲得"; // Đổi nút thành 'クーポン獲得'
         }, timer); // Hiển thị sau khi hoàn thành thời gian quay
     };
 
@@ -82,5 +92,13 @@
     };
 
     // Gắn sự kiện click vào nút quay
-    btn__wheel.addEventListener('click', start);
+    btn__wheel.addEventListener('click', () => {
+        if (!hasStarted) {
+            start(); // Chưa start thì thực hiện quay
+        } else {
+            // Nếu đã quay xong, cuộn tới header
+            const header = document.querySelector('header');
+            header.scrollIntoView({ behavior: 'smooth' });
+        }
+    });
 })();
